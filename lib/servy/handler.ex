@@ -4,6 +4,7 @@ defmodule Servy.Handler do
     |> parse
     |> log
     |> route
+    |> track
     |> format_response
   end
 
@@ -19,15 +20,11 @@ defmodule Servy.Handler do
 
   def log(conversation_string), do: IO.inspect(conversation_string)
 
-  def route(conversation_string) do
-    route(conversation_string, conversation_string.method, conversation_string.path)
-  end
-
-  def route(conversation_string, "GET", "/genres") do
+  def route(%{method: "GET", path: "/genres"} = conversation_string) do
     %{conversation_string | status: 200, response_body: "Strategy, FPS, RPG"}
   end
 
-  def route(conversation_string, "GET", "/games") do
+  def route(%{method: "GET", path: "/games"} = conversation_string) do
     %{
       conversation_string
       | status: 200,
@@ -35,13 +32,21 @@ defmodule Servy.Handler do
     }
   end
 
-  def route(conversation_string, "GET", "/games/" <> id) do
+  def route(%{method: "GET", path: "/games/" <> id} = conversation_string) do
     %{conversation_string | status: 200, response_body: "Game #{id}"}
   end
 
-  def route(conversation_string, _method, path) do
+  def route(%{path: path} = conversation_string) do
     %{conversation_string | status: 404, response_body: "No #{path} here!"}
   end
+
+  def track(%{status: 404, path: path} = conversation_string) do
+    IO.puts("Warning #{path} is on the loose!")
+
+    conversation_string
+  end
+
+  def track(conversation_string), do: conversation_string
 
   def format_response(conversation_string) do
     """
