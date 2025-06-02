@@ -1,7 +1,5 @@
 defmodule Servy do
-  def hello(name) do
-    "Hello, #{name}"
+  def hello do
+    "Hello World"
   end
 end
-
-IO.puts(Servy.hello("Alex"))
