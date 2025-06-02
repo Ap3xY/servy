@@ -6,8 +6,14 @@ defmodule Servy.Handler do
     |> format_response
   end
 
-  def parse(conversation_string) do
-    conversation_string = %{method: "GET", path: "/games", response_body: ""}
+  def parse(request) do
+    [method, path, _] =
+      request
+      |> String.split("\n")
+      |> List.first()
+      |> String.split(" ")
+
+    %{method: method, path: path, response_body: ""}
   end
 
   def route(conversation_string) do
