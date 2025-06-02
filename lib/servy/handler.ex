@@ -17,16 +17,16 @@ defmodule Servy.Handler do
   end
 
   def route(conversation_string) do
-    conversation_string = %{method: "GET", path: "/games", response_body: "Halo, CS2, COD"}
+    %{conversation_string | response_body: "Halo, CS2, COD"}
   end
 
   def format_response(conversation_string) do
     """
     HTTP/1.1 200 OK
     Content-Type: text/html
-    Content-Length: 20
+    Content-Length: #{String.length(conversation_string.response_body)}
 
-    Halo, CS2, COD
+    #{conversation_string.response_body}
     """
   end
 end
