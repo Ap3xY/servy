@@ -36,8 +36,37 @@ defmodule Servy.Handler do
     %{conversation_string | status: 200, response_body: "Game #{id}"}
   end
 
+  # def route(%{method: "GET", path: "/about"} = conversation_string) do
+  #   case File.read("pages/about.html") do
+  #     {:ok, contents} ->
+  #       %{conversation_string | status: 200, response_body: contents}
+
+  #     {:error, :enoent} ->
+  #       %{conversation_string | status: 404, response_body: "File not Found"}
+
+  #     {:error, reason} ->
+  #       %{conversation_string | status: 500, response_body: "File error: #{reason}"}
+  #   end
+  # end
+
+  def route(%{method: "GET", path: "/about"} = conversation_string) do
+    File.read("pages/about.html") |> handle_file(conversation_string)
+  end
+
   def route(%{path: path} = conversation_string) do
     %{conversation_string | status: 404, response_body: "No #{path} here!"}
+  end
+
+  def handle_file({:ok, contents}, conversation_string) do
+    %{conversation_string | status: 200, response_body: contents}
+  end
+
+  def handle_file({:error, :enoent}, conversation_string) do
+    %{conversation_string | status: 404, response_body: "File not Found"}
+  end
+
+  def handle_file({:error, reason}, conversation_string) do
+    %{conversation_string | status: 500, response_body: "File error: #{reason}"}
   end
 
   def track(%{status: 404, path: path} = conversation_string) do
@@ -67,7 +96,7 @@ defmodule Servy.Handler do
 end
 
 request = """
-GET /games/1 HTTP/1.1
+GET /about HTTP/1.1
 Host: example.com
 User-Agent: ExampleBrowser/1.0
 Accept: */*
