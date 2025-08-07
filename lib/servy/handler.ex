@@ -1,10 +1,19 @@
 defmodule Servy.Handler do
   def handle(request) do
-    request |> parse() |> route() |> format_response()
+    request |> parse() |> log |> route() |> format_response()
   end
 
   def parse(request) do
-    conv = %{method: "GET", path: "/wildthings", resp_body: ""}
+    [method, endpoint, _version] =
+      request |> String.split("\n") |> List.first() |> String.split(" ")
+
+    %{method: method, path: endpoint, resp_body: ""}
+  end
+
+  def log(conv) do
+    IO.inspect(conv)
+
+    conv
   end
 
   def route(conv) do
