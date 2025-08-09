@@ -10,6 +10,22 @@ defmodule Servy.Handler do
     %{method: method, path: endpoint, status: nil, resp_body: ""}
   end
 
+  def handle_file({:ok, content}, conv) do
+    %{conv | status: 200, resp_body: content}
+  end
+
+  def handle_file({:error, :enoent}, conv) do
+    %{conv | status: 200, resp_body: "File error: File not Found"}
+  end
+
+  def handle_file({:error, reason}, conv) do
+    %{conv | status: 200, resp_body: "File error: #{reason}"}
+  end
+
+  def route(%{method: "GET", path: "/about"} = conv) do
+    File.read("pages/about.html") |> handle_file(conv)
+  end
+
   def route(%{method: "GET", path: "/codinglanguages"} = conv) do
     %{conv | status: 200, resp_body: "C++, Python, Javascript"}
   end
@@ -45,7 +61,7 @@ defmodule Servy.Handler do
 end
 
 request = """
-GET /frameworks/1 HTTP/1.1
+GET /about HTTP/1.1
 Host: example.com
 User-Agent: ExampleBrowser/1.0
 Accept: */*
