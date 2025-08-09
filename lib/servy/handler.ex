@@ -1,4 +1,13 @@
 defmodule Servy.Handler do
+  @moduledoc """
+  Handles HTTP requests.
+  """
+
+  @pages_path "pages/about.html"
+
+  @doc """
+  Transforms the request into a response.
+  """
   def handle(request) do
     request |> parse() |> route() |> format_response()
   end
@@ -23,7 +32,7 @@ defmodule Servy.Handler do
   end
 
   def route(%{method: "GET", path: "/about"} = conv) do
-    File.read("pages/about.html") |> handle_file(conv)
+    File.read(@pages_path) |> handle_file(conv)
   end
 
   def route(%{method: "GET", path: "/codinglanguages"} = conv) do
