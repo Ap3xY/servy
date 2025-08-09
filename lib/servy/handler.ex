@@ -10,20 +10,16 @@ defmodule Servy.Handler do
     %{method: method, path: endpoint, status: nil, resp_body: ""}
   end
 
-  def route(conv) do
-    route(conv, conv.method, conv.path)
-  end
-
-  def route(conv, "GET", "/codinglanguages") do
+  def route(%{method: "GET", path: "/codinglanguages"} = conv) do
     %{conv | status: 200, resp_body: "C++, Python, Javascript"}
   end
 
-  def route(conv, "GET", "/frameworks") do
-    %{conv | status: 200, resp_body: "NextJS, Springboot, Django"}
+  def route(%{method: "GET", path: "/frameworks/" <> id} = conv) do
+    %{conv | status: 200, resp_body: "Framework #{id}"}
   end
 
-  def route(conv, "GET", "/frameworks/" <> id) do
-    %{conv | status: 200, resp_body: "Framework #{id}"}
+  def route(%{method: "GET", path: "/frameworks"} = conv) do
+    %{conv | status: 200, resp_body: "NextJS, Springboot, Django"}
   end
 
   def route(conv, _method, path) do
