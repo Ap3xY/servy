@@ -4,6 +4,7 @@ defmodule Servy.Handler do
   """
 
   alias Servy.Conv
+  alias Servy.FrameworkController
 
   @pages_path "pages/about.html"
 
@@ -31,14 +32,6 @@ defmodule Servy.Handler do
     %{conv | status: 200, resp_body: "File error: #{reason}"}
   end
 
-  def route(%Conv{method: "POST", path: "/frameworks"} = conv) do
-    %{
-      conv
-      | status: 201,
-        resp_body: "Create a #{conv.params["type"]} Framework named #{conv.params["name"]}!"
-    }
-  end
-
   def route(%Conv{method: "GET", path: "/about"} = conv) do
     File.read(@pages_path) |> handle_file(conv)
   end
@@ -48,11 +41,17 @@ defmodule Servy.Handler do
   end
 
   def route(%Conv{method: "GET", path: "/frameworks/" <> id} = conv) do
-    %{conv | status: 200, resp_body: "Framework #{id}"}
+    params = Map.put(conv.params, "id", id)
+
+    FrameworkController.show(conv, params)
   end
 
   def route(%Conv{method: "GET", path: "/frameworks"} = conv) do
-    %{conv | status: 200, resp_body: "NextJS, Springboot, Django"}
+    FrameworkController.index(conv)
+  end
+
+  def route(%Conv{method: "POST", path: "/frameworks"} = conv) do
+    FrameworkController.create(conv, conv.params)
   end
 
   def route(conv, _method, path) do

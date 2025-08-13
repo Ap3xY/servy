@@ -11,5 +11,3 @@ defmodule Recurse do
     current_list |> Enum.reverse()
   end
 end
-
-IO.inspect(Recurse.triple([1, 2, 3, 4, 5]))
