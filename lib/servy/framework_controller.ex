@@ -1,21 +1,29 @@
 defmodule Servy.FrameworkController do
   alias Servy.CodingStuff
 
-  def index(conv) do
-    items =
-      CodingStuff.list_frameworks()
-      |> Enum.filter(fn framework -> framework.type == "React" end)
-      |> Enum.sort(fn framework1, framework2 -> framework1.name <= framework2.name end)
-      |> Enum.map(fn framework -> "<li>#{framework.name} - #{framework.type}</li>" end)
-      |> Enum.join()
+  @templates_path "templates"
 
-    %{conv | status: 200, resp_body: "<ul>#{items}</ul>"}
+  defp render(conv, template, bindings) do
+    content =
+      @templates_path
+      |> Path.join(template)
+      |> EEx.eval_file(bindings)
+
+    %{conv | status: 200, resp_body: content}
+  end
+
+  def index(conv) do
+    frameworks =
+      CodingStuff.list_frameworks()
+      |> Enum.sort(fn framework1, framework2 -> framework1.name <= framework2.name end)
+
+    render(conv, "index.eex", frameworks: frameworks)
   end
 
   def show(conv, %{"id" => id}) do
     framework = CodingStuff.get_framework(id)
 
-    %{conv | status: 200, resp_body: "<h1>Framework #{framework.id}: #{framework.name}</h1>"}
+    render(conv, "show.eex", framework: framework)
   end
 
   def create(conv, %{"name" => name, "type" => type} = _params) do

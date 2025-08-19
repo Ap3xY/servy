@@ -24,6 +24,10 @@ defmodule Servy.Parser do
     parse_headers(tail, headers)
   end
 
+  @doc """
+  Parses the given param string of the form `key1=value&key2=value2`
+  into a map with corresponding keys and values
+  """
   def parse_headers([], headers) do
     headers
   end

@@ -75,18 +75,3 @@ defmodule Servy.Handler do
     }[code]
   end
 end
-
-request = """
-POST /frameworks HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 21
-
-name=NextJS&type=React
-"""
-
-response = Servy.Handler.handle(request)
-
-IO.puts(response)

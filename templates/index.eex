@@ -1,7 +1,7 @@
 <h1>All The Frameworks!</h1>
 
 <ul>
-  <li>Name - Brown</li>
-  <li>Name - Grizzly</li>
-  <li>Name - Polar</li>
+  <%= for framework <- frameworks do %>
+   <li> <%= framework.name %> - <%= framework.type %> </li>
+  <% end %>
 </ul>
