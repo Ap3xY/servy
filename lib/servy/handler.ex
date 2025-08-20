@@ -32,6 +32,12 @@ defmodule Servy.Handler do
     %{conv | status: 200, resp_body: "File error: #{reason}"}
   end
 
+  def route(%Conv{ method: "GET", path: "/hibernate/" <> time } = conv) do
+    time |> String.to_integer |> :timer.sleep
+
+    %{ conv | status: 200, resp_body: "Awake!" }
+  end
+
   def route(%Conv{method: "GET", path: "/about"} = conv) do
     File.read(@pages_path) |> handle_file(conv)
   end
