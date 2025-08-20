@@ -40,11 +40,17 @@ defmodule Servy.Handler do
     %{conv | status: 200, resp_body: "C++, Python, Javascript"}
   end
 
+
   def route(%Conv{method: "GET", path: "/frameworks/" <> id} = conv) do
     params = Map.put(conv.params, "id", id)
 
     FrameworkController.show(conv, params)
   end
+
+  def route(%Conv{method: "GET", path: "/api/frameworks"} = conv) do
+    Servy.Api.FrameworkController.index(conv)
+  end
+
 
   def route(%Conv{method: "GET", path: "/frameworks"} = conv) do
     FrameworkController.index(conv)
@@ -61,7 +67,7 @@ defmodule Servy.Handler do
   def format_response(%Conv{} = conv) do
     """
     HTTP/1.1 #{conv.status} #{status_reason(conv.status)}
-    Content-Type: text/html
+    Content-Type: #{conv.resp_content_type}
     Content-Length: #{String.length(conv.resp_body)}
 
     #{conv.resp_body}
