@@ -60,7 +60,7 @@ defmodule Servy.Handler do
     FrameworkController.create(conv, conv.params)
   end
 
-  def route(conv, _method, path) do
+  def route(%Conv{path: path} = conv) do
     %{conv | status: 404, resp_body: "No #{path}, here!"}
   end
 
