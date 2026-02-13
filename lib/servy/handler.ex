@@ -16,20 +16,17 @@ defmodule Servy.Handler do
     %{ method: method, path: path, resp_body: ""}
   end
 
-  @spec route(any()) :: %{method: <<_::24>>, path: <<_::88>>, resp_body: <<_::160>>}
   def route(conv) do
-    # TODO: Create a new map that also has the response body:
-    conv = %{ method: "GET", path: "/wildthings", resp_body: "Bears, Lions, Tigers" }
+    %{ conv | resp_body: "Bears, Lions, Tigers"}
   end
 
   def format_response(conv) do
-    # TODO: Use values in the map to create an HTTP response string:
     """
     HTTP/1.1 200 OK
     Content-Type: text/html
-    Content-Length: 20
+    Content-Length: #{String.length(conv.resp_body)}
 
-    Bears, Lions, Tigers
+    #{conv.resp_body}
     """
   end
 end
