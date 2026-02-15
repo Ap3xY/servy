@@ -1,10 +1,10 @@
 defmodule Servy.Handler do
-
   @moduledoc """
   Handles HTTP requests.
   """
 
   alias Servy.Conv
+  alias Servy.BearController
 
   @pages_path Path.expand("../../pages", __DIR__)
 
@@ -16,40 +16,41 @@ defmodule Servy.Handler do
   Transfroms the request into a response
   """
   def handle(request) do
-   request
-   |> parse()
-   |> rewrite_path()
-   |> log()
-   |> route()
-   |> track()
-   |> format_response()
+    request
+    |> parse()
+    |> rewrite_path()
+    |> log()
+    |> route()
+    |> track()
+    |> format_response()
   end
 
-  def route(%Conv{ method: "GET", path: "/wildthings"} = conv) do
-    %{ conv | status: 200, resp_body: "Bears, Lions, Tigers"}
+  def route(%Conv{method: "GET", path: "/wildthings"} = conv) do
+    %{conv | status: 200, resp_body: "Bears, Lions, Tigers"}
   end
 
-  def route(%Conv{ method: "GET", path: "/bears"} = conv) do
-    %{ conv | status: 200, resp_body: "Teddy, Smokey, Paddington"}
+  def route(%Conv{method: "GET", path: "/bears"} = conv) do
+    BearController.index(conv)
   end
 
-  def route(%Conv{ method: "POST", path: "/bears"} = conv) do
-    %{ conv | status: 201, resp_body: "Create a #{conv.params["type"]} bear named #{conv.params["name"]}!"}
+  def route(%Conv{method: "POST", path: "/bears"} = conv) do
+    BearController.create(conv, conv.params)
   end
 
-  def route(%Conv{ method: "GET", path: "/bears/new"} = conv) do
+  def route(%Conv{method: "GET", path: "/bears/new"} = conv) do
     serve_page(conv, "form.html")
   end
 
-  def route(%Conv{ method: "GET", path: "/bears/" <> id} = conv) do
-    %{ conv | status: 200, resp_body: "Bear #{id}"}
+  def route(%Conv{method: "GET", path: "/bears/" <> id} = conv) do
+    params = Map.put(conv.params, "id", id)
+    BearController.show(conv, params)
   end
 
-  def route(%Conv{ method: "GET", path: "/about"} = conv) do
+  def route(%Conv{method: "GET", path: "/about"} = conv) do
     serve_page(conv, "about.html")
   end
 
-  def route(%Conv{ path: path} = conv) do
+  def route(%Conv{path: path} = conv) do
     %{conv | status: 404, resp_body: "No #{path} here!"}
   end
 
@@ -156,4 +157,4 @@ name=Baloo&type=Brown
 
 response = Servy.Handler.handle(request)
 
-IO.puts response
+IO.puts(response)
