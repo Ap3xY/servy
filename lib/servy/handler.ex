@@ -1,7 +1,16 @@
 defmodule Servy.Handler do
 
+  @moduledoc """
+  Handles HTTP requests.
+  """
+
+  @pages_path Path.expand("../../pages", __DIR__)
+
   require Logger
 
+  @doc """
+  Transfroms the request into a response
+  """
   def handle(request) do
    request
    |> parse()
@@ -73,6 +82,9 @@ defmodule Servy.Handler do
     %{ conv | status: 500, resp_body: "File error: #{reason}"}
   end
 
+  @doc """
+  Logs 404 requests
+  """
   def track(%{status: 404, path: path} = conv) do
     Logger.warning("Warning: #{path} is on the loose!")
     conv
@@ -102,8 +114,7 @@ defmodule Servy.Handler do
   end
 
   defp serve_page(conv, file_name) do
-    "../../pages"
-    |> Path.expand(__DIR__)
+    @pages_path
     |> Path.join(file_name)
     |> File.read()
     |> handle_file(conv)
