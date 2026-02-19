@@ -3,6 +3,7 @@ defmodule Servy.Handler do
   Handles HTTP requests.
   """
 
+  alias Servy.Bear
   alias Servy.Conv
   alias Servy.BearController
 
@@ -35,6 +36,10 @@ defmodule Servy.Handler do
 
   def route(%Conv{method: "POST", path: "/bears"} = conv) do
     BearController.create(conv, conv.params)
+  end
+
+  def route(%Conv{method: "DELETE", path: "/bears/" <> _id} = conv) do
+    BearController.delete(conv, conv.params)
   end
 
   def route(%Conv{method: "GET", path: "/bears/new"} = conv) do
