@@ -3,7 +3,6 @@ defmodule Servy.Handler do
   Handles HTTP requests.
   """
 
-  alias Servy.Bear
   alias Servy.Conv
   alias Servy.BearController
 
