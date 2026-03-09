@@ -11,7 +11,3 @@ defmodule Recurse do
 
   def triple([]), do: []
 end
-
-Recurse.sum([1, 2, 3, 3], 0)
-
-IO.inspect(Recurse.triple([1, 2, 3, 4, 5]))
